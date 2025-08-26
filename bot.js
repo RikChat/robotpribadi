@@ -1,4 +1,5 @@
 // bot.js
+require("dotenv").config();
 const express = require("express");
 const bodyParser = require("body-parser");
 const axios = require("axios");
@@ -7,14 +8,15 @@ const twilio = require("twilio");
 const app = express();
 app.use(bodyParser.json());
 
-// langsung pakai token dari kamu
-const PAGE_ACCESS_TOKEN = "EAAZAsjZAeUzvYBPeQWrgy8hugd4n90O1QjP9ZBo7K2WEtGZCKWO6BGTHycx0CSRjdgxIVxH2PjY2LkCOpuzwNQ59ZBa6XmlMOuiHW0uzMu3DxpTOPiqkS5jGWTfzVmRSfgbXSDKTOHe58uGYSK65Yb3Tp3sBETUvmJiqVwz4irbvXfJZC9nz3X73xQ9kbj070RzfgbTRUZD";
-const PHONE_NUMBER_ID = "109108612078287";
-const VERIFY_TOKEN = "mywa123";
+// ambil dari .env
+const PAGE_ACCESS_TOKEN = process.env.PAGE_ACCESS_TOKEN;
+const PHONE_NUMBER_ID = process.env.PHONE_NUMBER_ID;
+const VERIFY_TOKEN = process.env.VERIFY_TOKEN;
 
-const TWILIO_ACCOUNT_SID = "AC0b6ef5d86cdcfd2d5ba32d3432745164";
-const TWILIO_AUTH_TOKEN = "6ed8c39207aea192cb190fe970c99de5";
-const TWILIO_PHONE_NUMBER = "+15086259671";
+const TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID;
+const TWILIO_AUTH_TOKEN = process.env.TWILIO_AUTH_TOKEN;
+const TWILIO_PHONE_NUMBER = process.env.TWILIO_PHONE_NUMBER;
+const MY_PHONE_NUMBER = process.env.MY_PHONE_NUMBER;
 
 const twilioClient = twilio(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN);
 
@@ -53,7 +55,7 @@ app.post("/webhook", async (req, res) => {
       twilioClient.calls
         .create({
           url: "http://demo.twilio.com/docs/voice.xml",
-          to: "+6281917651057", // nomor kamu
+          to: MY_PHONE_NUMBER, // dari .env
           from: TWILIO_PHONE_NUMBER,
         })
         .then((call) => console.log("✅ Call SID:", call.sid))
@@ -63,4 +65,5 @@ app.post("/webhook", async (req, res) => {
   res.sendStatus(200);
 });
 
-app.listen(3000, () => console.log("🚀 Bot WhatsApp aktif di http://localhost:3000"));
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`🚀 Bot WhatsApp aktif di port ${PORT}`));
